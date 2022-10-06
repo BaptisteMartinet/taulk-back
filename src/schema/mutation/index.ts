@@ -9,7 +9,7 @@ import LobbyMutation from './lobby';
 import ChannelMutation from './channel';
 import MessageMutation from './message';
 
-const mutationType = new GraphQLObjectType({
+const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     account: {
@@ -57,4 +57,4 @@ const mutationType = new GraphQLObjectType({
   },
 });
 
-export default mutationType;
+export default MutationType;
