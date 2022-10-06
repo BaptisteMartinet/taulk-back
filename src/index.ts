@@ -23,7 +23,7 @@ import schema from './schema';
     csrfPrevention: true,
     cache: 'bounded',
     context: async ({ req }) => {
-      const token = req.headers.authorization;
+      const token = req.headers.authorization?.slice(7); // Slice out the 'Bearer ' part
       if (!token) return {};
       const jwtPayload = jwt.verify(token, JWT_SECRET_KEY!) as any;
       if (!jwtPayload) throw new Error('Unable to verify Authorization header');

@@ -52,7 +52,7 @@ const AccountMutation = new GraphQLObjectType({
           throw new Error('Invalid password');
         }
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY!, { expiresIn: '48h' });
-        Object.assign(user, { token });
+        Object.assign(user, { token: `Bearer ${token}` });
         return user;
       },
     },
