@@ -23,6 +23,15 @@ export const UserTypeFull = new GraphQLObjectType({
   },
 });
 
+export const MessageType = new GraphQLObjectType({
+  name: 'Message',
+  fields: {
+    id: { type: GraphQLID },
+    owner: { type: UserType },
+    content: { type: GraphQLString },
+  },
+});
+
 export const ChannelType = new GraphQLObjectType({
   name: 'Channel',
   fields: {
