@@ -2,7 +2,7 @@ import { GraphQLList, GraphQLObjectType } from 'graphql';
 import LobbyModel from 'models/Lobby.model';
 import { LobbyType } from 'schema/output-types';
 
-const queryType = new GraphQLObjectType({
+const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
     lobbies: {
@@ -15,4 +15,4 @@ const queryType = new GraphQLObjectType({
   },
 });
 
-export default queryType;
+export default QueryType;
