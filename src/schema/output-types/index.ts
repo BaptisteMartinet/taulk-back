@@ -28,6 +28,9 @@ export const ChannelType = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLID },
     title: { type: GraphQLString },
+    owner: { type: UserType },
+    users: { type: new GraphQLList(UserType) },
+    messages: { type: new GraphQLList(MessageType) },
   },
 });
 
