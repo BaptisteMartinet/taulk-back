@@ -24,10 +24,10 @@ const LobbyMutation = new GraphQLObjectType({
           throw new Error('User must be authenticated');
         }
         const lobby = await LobbyModel.create({ title, description, owner: currentUser.id });
-        return lobby.populate([{ path: 'owner', model: 'User' }]);
+        return lobby.populate('owner');
       },
     },
-    // TODO update field
+    // update: {},
     delete: {
       type: GraphQLBoolean,
       async resolve(parent: HydratedDocument<ILobby>) {
