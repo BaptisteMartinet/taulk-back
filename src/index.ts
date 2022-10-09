@@ -1,7 +1,14 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { ApolloServer } from 'apollo-server';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+import express from 'express';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginDrainHttpServer,
+} from 'apollo-server-core';
+import { ApolloServer } from 'apollo-server-express';
 import { UserModel } from 'models';
 import {
   DATABASE_URL,
@@ -18,6 +25,13 @@ import schema from './schema';
   mongoose.set('debug', NODE_ENV === 'dev');
   await mongoose.connect(DATABASE_URL);
   console.info('Successfully connected to mongoDB');
+  const app = express();
+  const httpServer = createServer(app);
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+  const wsServerCleanup = useServer({ schema }, wsServer);
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
@@ -31,9 +45,20 @@ import schema from './schema';
       if (!currentUser) throw new Error('User does not exist');
       return { currentUser };
     },
-    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        serverWillStart: async () => ({
+          drainServer: async () => { await wsServerCleanup.dispose(); },
+        }),
+      },
+      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    ],
   });
-  server.listen({ port: PORT ?? 4000 }).then(({ url }) => {
-    console.info(`🚀  Server ready at ${url}`);
+  await server.start();
+  server.applyMiddleware({ app, path: '/graphql' });
+  await new Promise<void>((resolve) => {
+    httpServer.listen(PORT ?? 4000, () => { resolve(); });
   });
+  console.info('🚀 Server ready 🚀');
 })();

@@ -6,6 +6,7 @@ import {
 } from 'graphql';
 import { MessageModel } from 'models';
 import { MessageType } from 'schema/output-types';
+import { pubsub } from 'schema/subscription';
 
 const MessageMutation = new GraphQLObjectType({
   name: 'MessageMutation',
@@ -27,6 +28,7 @@ const MessageMutation = new GraphQLObjectType({
           owner: currentUser.id,
           content,
         });
+        pubsub.publish('NEW_MESSAGE', { newMessage: 'un message' });
         return message.populate('owner');
       },
     },
