@@ -6,6 +6,7 @@ import {
   GraphQLString,
 } from 'graphql';
 import { HydratedDocument } from 'mongoose';
+import { IContext } from 'utils/context';
 import type { IChannel } from 'models/Channel.model';
 import { ChannelModel, LobbyModel } from 'models';
 import { ChannelType } from 'schema/output-types';
@@ -19,7 +20,7 @@ const ChannelMutation = new GraphQLObjectType({
         lobbyId: { type: new GraphQLNonNull(GraphQLID) },
         title: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx) {
+      async resolve(_, args, ctx: IContext) {
         const { lobbyId, title } = args;
         const { currentUser } = ctx;
         if (!currentUser) {

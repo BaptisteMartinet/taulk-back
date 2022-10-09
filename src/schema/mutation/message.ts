@@ -4,6 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+import { IContext } from 'utils/context';
 import { MessageModel } from 'models';
 import { MessageType } from 'schema/output-types';
 import { pubsub } from 'schema/subscription';
@@ -17,7 +18,7 @@ const MessageMutation = new GraphQLObjectType({
         channelId: { type: new GraphQLNonNull(GraphQLID) },
         content: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx) {
+      async resolve(_, args, ctx: IContext) {
         const { channelId, content } = args;
         const { currentUser } = ctx;
         if (!currentUser) {

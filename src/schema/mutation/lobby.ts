@@ -5,6 +5,7 @@ import {
   GraphQLString,
 } from 'graphql';
 import { HydratedDocument } from 'mongoose';
+import { IContext } from 'utils/context';
 import { LobbyType } from 'schema/output-types';
 import LobbyModel, { ILobby } from 'models/Lobby.model';
 
@@ -17,7 +18,7 @@ const LobbyMutation = new GraphQLObjectType({
         title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx) {
+      async resolve(_, args, ctx: IContext) {
         const { title, description } = args;
         const { currentUser } = ctx;
         if (!currentUser) {

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import express from 'express';
@@ -9,14 +8,14 @@ import {
   ApolloServerPluginDrainHttpServer,
 } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
-import { UserModel } from 'models';
 import {
   DATABASE_URL,
   PORT,
   JWT_SECRET_KEY,
   NODE_ENV,
-} from './utils/env';
-import schema from './schema';
+} from 'utils/env';
+import context from 'utils/context';
+import schema from 'schema';
 
 (async () => {
   if (!DATABASE_URL || !JWT_SECRET_KEY) {
@@ -36,15 +35,7 @@ import schema from './schema';
     schema,
     csrfPrevention: true,
     cache: 'bounded',
-    context: async ({ req }) => {
-      const token = req.headers.authorization?.slice(7); // Slice out the 'Bearer ' part
-      if (!token) return {};
-      const jwtPayload = jwt.verify(token, JWT_SECRET_KEY!) as any;
-      if (!jwtPayload) throw new Error('Unable to verify Authorization header');
-      const currentUser = await UserModel.findById(jwtPayload.userId);
-      if (!currentUser) throw new Error('User does not exist');
-      return { currentUser };
-    },
+    context,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
