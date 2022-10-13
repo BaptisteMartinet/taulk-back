@@ -6,6 +6,8 @@ import {
 } from 'graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { addHours } from 'date-fns';
+import type { IContext } from 'utils/context';
 import { UserModel } from 'models';
 import { UserFullType } from 'schema/output-types';
 
@@ -41,7 +43,7 @@ const AccountMutation = new GraphQLObjectType({
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx) {
+      async resolve(_, args, ctx: IContext) {
         const { email, password } = args;
         const user = await UserModel.findOne({ email }, '+password');
         if (!user) {
@@ -51,6 +53,7 @@ const AccountMutation = new GraphQLObjectType({
           throw new Error('Invalid password');
         }
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY!, { expiresIn: '48h' });
+        ctx.res.cookie('access_token', token, { expires: addHours(Date.now(), 48), httpOnly: true });
         Object.assign(user, { token: `Bearer ${token}` });
         return user;
       },
