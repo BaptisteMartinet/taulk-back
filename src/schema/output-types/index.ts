@@ -53,6 +53,17 @@ export const LobbyType = new GraphQLObjectType({
   name: 'Lobby',
   fields: {
     id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    description: { type: GraphQLString },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
+  },
+});
+
+export const LobbyFullType = new GraphQLObjectType({
+  name: 'LobbyFull',
+  fields: {
+    id: { type: GraphQLID },
     owner: { type: UserType },
     title: { type: GraphQLString },
     description: { type: GraphQLString },
