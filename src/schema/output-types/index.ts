@@ -6,15 +6,15 @@ import {
 } from 'graphql';
 import GraphQLDate from 'schema/scalars/date';
 
-export const UserType = new GraphQLObjectType({
-  name: 'User',
+export const UserRestrictedType = new GraphQLObjectType({
+  name: 'UserRestricted',
   fields: {
     username: { type: GraphQLString },
   },
 });
 
-export const UserFullType = new GraphQLObjectType({
-  name: 'UserFull',
+export const UserType = new GraphQLObjectType({
+  name: 'UserType',
   fields: {
     id: { type: GraphQLID },
     username: { type: GraphQLString },
@@ -30,7 +30,7 @@ export const MessageType = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLID },
     channel: { type: GraphQLID }, // TODO reference ChannelType
-    owner: { type: UserType },
+    owner: { type: UserRestrictedType },
     text: { type: GraphQLString },
     createdAt: { type: GraphQLDate },
     updatedAt: { type: GraphQLDate },
@@ -44,8 +44,19 @@ export const ChannelType = new GraphQLObjectType({
     lobby: { type: GraphQLID }, // TODO reference LobbyType
     title: { type: GraphQLString },
     owner: { type: UserType },
-    users: { type: new GraphQLList(UserType) },
+    users: { type: new GraphQLList(UserRestrictedType) },
     messages: { type: new GraphQLList(MessageType) },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
+  },
+});
+
+export const LobbyRestrictedType = new GraphQLObjectType({
+  name: 'LobbyRestricted',
+  fields: {
+    id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    description: { type: GraphQLString },
     createdAt: { type: GraphQLDate },
     updatedAt: { type: GraphQLDate },
   },
@@ -55,22 +66,11 @@ export const LobbyType = new GraphQLObjectType({
   name: 'Lobby',
   fields: {
     id: { type: GraphQLID },
-    title: { type: GraphQLString },
-    description: { type: GraphQLString },
-    createdAt: { type: GraphQLDate },
-    updatedAt: { type: GraphQLDate },
-  },
-});
-
-export const LobbyFullType = new GraphQLObjectType({
-  name: 'LobbyFull',
-  fields: {
-    id: { type: GraphQLID },
-    owner: { type: UserType },
+    owner: { type: UserRestrictedType },
     title: { type: GraphQLString },
     description: { type: GraphQLString },
     channels: { type: new GraphQLList(ChannelType) },
-    users: { type: new GraphQLList(UserType) },
+    users: { type: new GraphQLList(UserRestrictedType) },
     createdAt: { type: GraphQLDate },
     updatedAt: { type: GraphQLDate },
   },

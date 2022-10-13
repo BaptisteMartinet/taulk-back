@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { addHours } from 'date-fns';
 import type { IContext } from 'utils/context';
 import { UserModel } from 'models';
-import { UserFullType } from 'schema/output-types';
+import { UserType } from 'schema/output-types';
 
 const AccountMutation = new GraphQLObjectType({
   name: 'AccountMutation',
@@ -38,7 +38,7 @@ const AccountMutation = new GraphQLObjectType({
       },
     },
     login: {
-      type: UserFullType,
+      type: UserType,
       args: {
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },

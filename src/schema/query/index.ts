@@ -1,19 +1,19 @@
 import { GraphQLList, GraphQLObjectType } from 'graphql';
 import type { IContext } from 'utils/context';
 import LobbyModel from 'models/Lobby.model';
-import { LobbyType, LobbyFullType } from 'schema/output-types';
+import { LobbyType, LobbyRestrictedType } from 'schema/output-types';
 
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
     lobbies: {
-      type: new GraphQLList(LobbyType),
+      type: new GraphQLList(LobbyRestrictedType),
       async resolve() {
         return LobbyModel.find();
       },
     },
     myLobbies: {
-      type: new GraphQLList(LobbyFullType),
+      type: new GraphQLList(LobbyType),
       async resolve(_, args, ctx: IContext) {
         const { currentUser } = ctx;
         if (!currentUser) {
