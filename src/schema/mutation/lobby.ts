@@ -4,10 +4,9 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import type { HydratedDocument } from 'mongoose';
 import { IContext } from 'utils/context';
 import { LobbyType } from 'schema/output-types';
-import LobbyModel, { ILobby } from 'models/Lobby.model';
+import { LobbyModel } from 'models';
 
 const LobbyMutation = new GraphQLObjectType({
   name: 'LobbyMutation',
@@ -24,14 +23,19 @@ const LobbyMutation = new GraphQLObjectType({
         if (!currentUser) {
           throw new Error('User must be authenticated');
         }
-        const lobby = await LobbyModel.create({ title, description, owner: currentUser.id });
-        return lobby.populate('owner');
+        const lobby = await LobbyModel.create({
+          title,
+          description,
+          owner: currentUser.id,
+          users: [currentUser.id],
+        });
+        return lobby.populate('owner users');
       },
     },
     // update: {},
     delete: {
       type: GraphQLBoolean,
-      async resolve(parent: HydratedDocument<ILobby>) {
+      async resolve(parent) {
         await LobbyModel.findByIdAndDelete(parent.id);
         return true;
       },

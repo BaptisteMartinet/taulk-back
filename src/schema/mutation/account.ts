@@ -6,8 +6,6 @@ import {
 } from 'graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import type { HydratedDocument } from 'mongoose';
-import type { IUser } from 'models/User.model';
 import { UserModel } from 'models';
 import { UserFullType } from 'schema/output-types';
 
@@ -26,11 +24,12 @@ const AccountMutation = new GraphQLObjectType({
         if (await UserModel.exists({ email })) {
           throw new Error('Email already exists');
         }
-        if (!(await UserModel.create({
+        const user = await UserModel.create({
           username,
           email,
           password: bcrypt.hashSync(password, 10),
-        }))) {
+        });
+        if (!user) {
           throw new Error('Cannot create user');
         }
         return true;
@@ -44,7 +43,7 @@ const AccountMutation = new GraphQLObjectType({
       },
       async resolve(_, args, ctx) {
         const { email, password } = args;
-        const user: HydratedDocument<IUser> | null = await UserModel.findOne({ email }, '+password');
+        const user = await UserModel.findOne({ email }, '+password');
         if (!user) {
           throw new Error('User does not exist');
         }

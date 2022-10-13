@@ -5,9 +5,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import type { HydratedDocument } from 'mongoose';
 import { IContext } from 'utils/context';
-import type { IChannel } from 'models/Channel.model';
 import { ChannelModel, LobbyModel } from 'models';
 import { ChannelType } from 'schema/output-types';
 
@@ -30,20 +28,24 @@ const ChannelMutation = new GraphQLObjectType({
         if (!lobby) {
           throw new Error(`Lobby#${lobbyId} does not exists`);
         }
+        if (!lobby.users.includes(currentUser.id)) {
+          throw new Error(`User#${currentUser.id} is not in Lobby#${lobbyId}`);
+        }
         const channel = await ChannelModel.create({
           lobby: lobbyId,
           title,
           owner: currentUser.id,
+          users: [currentUser.id],
         });
         lobby.channels.push(channel.id);
         await lobby.save();
-        return channel.populate('owner');
+        return channel.populate('owner users');
       },
     },
     // update: {},
     delete: {
       type: GraphQLBoolean,
-      async resolve(parent: HydratedDocument<IChannel>) {
+      async resolve(parent) {
         await ChannelModel.findByIdAndDelete(parent.id);
         return true;
       },
