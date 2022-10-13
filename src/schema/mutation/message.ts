@@ -36,8 +36,9 @@ const MessageMutation = new GraphQLObjectType({
           owner: currentUser.id,
           text,
         });
-        pubsub.publish('NEW_MESSAGE', { newMessage: 'un message' });
-        return message.populate('owner');
+        const populatedMessage = await message.populate('owner');
+        pubsub.publish('NEW_MESSAGE', { newMessage: populatedMessage });
+        return populatedMessage;
       },
     },
     // update: {},
