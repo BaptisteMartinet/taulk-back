@@ -4,7 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { IContext } from 'utils/context';
+import type { IContext } from 'utils/context';
 import { MessageModel, ChannelModel } from 'models';
 import { MessageType } from 'schema/output-types';
 import { pubsub } from 'schema/subscription';
@@ -36,6 +36,8 @@ const MessageMutation = new GraphQLObjectType({
           owner: currentUser.id,
           text,
         });
+        channel.messages.push(message.id);
+        await channel.save();
         const populatedMessage = await message.populate('owner');
         pubsub.publish('NEW_MESSAGE', { newMessage: populatedMessage });
         return populatedMessage;
