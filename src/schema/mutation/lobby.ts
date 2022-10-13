@@ -4,7 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { HydratedDocument } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 import { IContext } from 'utils/context';
 import { LobbyType } from 'schema/output-types';
 import LobbyModel, { ILobby } from 'models/Lobby.model';

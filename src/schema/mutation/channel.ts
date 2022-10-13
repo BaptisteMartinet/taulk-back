@@ -5,7 +5,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { HydratedDocument } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 import { IContext } from 'utils/context';
 import type { IChannel } from 'models/Channel.model';
 import { ChannelModel, LobbyModel } from 'models';

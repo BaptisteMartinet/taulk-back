@@ -6,7 +6,7 @@ import {
 } from 'graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { HydratedDocument } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 import type { IUser } from 'models/User.model';
 import { UserModel } from 'models';
 import { UserTypeFull } from 'schema/output-types';
