@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
+import type { HydratedDocument } from 'mongoose';
 import { ContextFunction } from 'apollo-server-core';
 import { ExpressContext } from 'apollo-server-express';
 import { UserModel } from 'models';
+import type { IUser } from 'models/User.model';
 import { JWT_SECRET_KEY } from 'utils/env';
 
 export interface IContext {
   req: express.Request;
   res: express.Response;
-  currentUser?: any;
+  currentUser?: HydratedDocument<IUser>;
 }
 
 const context: ContextFunction<ExpressContext> = async ({ req, res }): Promise<IContext> => {
