@@ -29,6 +29,7 @@ export const MessageType = new GraphQLObjectType({
   name: 'Message',
   fields: {
     id: { type: GraphQLID },
+    channel: { type: GraphQLID }, // TODO reference ChannelType
     owner: { type: UserType },
     text: { type: GraphQLString },
     createdAt: { type: GraphQLDate },
@@ -40,6 +41,7 @@ export const ChannelType = new GraphQLObjectType({
   name: 'Channel',
   fields: {
     id: { type: GraphQLID },
+    lobby: { type: GraphQLID }, // TODO reference LobbyType
     title: { type: GraphQLString },
     owner: { type: UserType },
     users: { type: new GraphQLList(UserType) },
