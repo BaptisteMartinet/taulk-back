@@ -9,8 +9,7 @@ const QueryType = new GraphQLObjectType({
     lobbies: {
       type: new GraphQLList(LobbyType),
       async resolve() {
-        const lobbies = await LobbyModel.find();
-        return lobbies;
+        return LobbyModel.find();
       },
     },
     myLobbies: {
@@ -20,7 +19,7 @@ const QueryType = new GraphQLObjectType({
         if (!currentUser) {
           throw new Error('User must be authenticated');
         }
-        const lobbies = await LobbyModel.find({ users: currentUser.id }).populate([
+        return LobbyModel.find({ users: currentUser.id }).populate([
           'owner',
           'users',
           {
@@ -29,7 +28,6 @@ const QueryType = new GraphQLObjectType({
             populate: 'owner users messages',
           },
         ]);
-        return lobbies;
       },
     },
   },
