@@ -4,22 +4,24 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+import GraphQLDate from 'schema/scalars/date';
 
 export const UserType = new GraphQLObjectType({
   name: 'User',
   fields: {
-    id: { type: GraphQLID },
     username: { type: GraphQLString },
   },
 });
 
-export const UserTypeFull = new GraphQLObjectType({
+export const UserFullType = new GraphQLObjectType({
   name: 'UserFull',
   fields: {
     id: { type: GraphQLID },
     username: { type: GraphQLString },
     email: { type: GraphQLString },
     token: { type: GraphQLString },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
   },
 });
 
@@ -28,7 +30,9 @@ export const MessageType = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLID },
     owner: { type: UserType },
-    content: { type: GraphQLString },
+    text: { type: GraphQLString },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
   },
 });
 
@@ -40,6 +44,8 @@ export const ChannelType = new GraphQLObjectType({
     owner: { type: UserType },
     users: { type: new GraphQLList(UserType) },
     messages: { type: new GraphQLList(MessageType) },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
   },
 });
 
@@ -52,5 +58,7 @@ export const LobbyType = new GraphQLObjectType({
     description: { type: GraphQLString },
     channels: { type: new GraphQLList(ChannelType) },
     users: { type: new GraphQLList(UserType) },
+    createdAt: { type: GraphQLDate },
+    updatedAt: { type: GraphQLDate },
   },
 });

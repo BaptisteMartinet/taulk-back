@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import type { HydratedDocument } from 'mongoose';
 import type { IUser } from 'models/User.model';
 import { UserModel } from 'models';
-import { UserTypeFull } from 'schema/output-types';
+import { UserFullType } from 'schema/output-types';
 
 const AccountMutation = new GraphQLObjectType({
   name: 'AccountMutation',
@@ -37,7 +37,7 @@ const AccountMutation = new GraphQLObjectType({
       },
     },
     login: {
-      type: UserTypeFull,
+      type: UserFullType,
       args: {
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
