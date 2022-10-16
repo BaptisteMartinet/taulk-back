@@ -4,13 +4,13 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import type { IContext } from 'utils/context';
+import type { IContextAuthenticated } from 'utils/context';
 import { MessageModel, ChannelModel } from 'models';
 import { MessageType } from 'schema/output-types';
 import { pubsub } from 'schema/subscription';
 
 const MessageMutation = new GraphQLObjectType({
-  name: 'MessageMutation',
+  name: 'MessageMutation_Authenticated',
   fields: {
     create: {
       type: MessageType,
@@ -18,12 +18,9 @@ const MessageMutation = new GraphQLObjectType({
         channelId: { type: new GraphQLNonNull(GraphQLID) },
         text: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx: IContext) {
+      async resolve(_, args, ctx: IContextAuthenticated) {
         const { channelId, text } = args;
         const { currentUser } = ctx;
-        if (!currentUser) {
-          throw new Error('User must be authenticated');
-        }
         const channel = await ChannelModel.findById(channelId);
         if (!channel) {
           throw new Error(`Channel#${channelId} does not exist`);

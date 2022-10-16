@@ -1,57 +1,22 @@
-import { GraphQLID, GraphQLObjectType } from 'graphql';
-import {
-  LobbyModel,
-  ChannelModel,
-  MessageModel,
-} from 'models';
-import AccountMutation from './account';
-import LobbyMutation from './lobby';
-import ChannelMutation from './channel';
-import MessageMutation from './message';
+import { GraphQLObjectType } from 'graphql';
+import { IContext, IContextAuthenticated } from 'utils/context';
+import PublicMutation from './public';
+import AuthenticatedMutation from './authenticated';
 
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    account: {
-      type: AccountMutation,
-      resolve() {
+    public: {
+      type: PublicMutation,
+      resolve: () => ({}),
+    },
+    authenticated: {
+      type: AuthenticatedMutation,
+      resolve(_, args, ctx: IContext) {
+        if (!ctx.currentUser) {
+          throw new Error('User must be authenticated');
+        }
         return {};
-      },
-    },
-    lobby: {
-      type: LobbyMutation,
-      args: {
-        id: { type: GraphQLID },
-      },
-      async resolve(_, { id }, ctx) {
-        if (!id) return {};
-        const lobby = await LobbyModel.findById(id);
-        if (!lobby) throw new Error(`Lobby#${id} does not exist`);
-        return lobby;
-      },
-    },
-    channel: {
-      type: ChannelMutation,
-      args: {
-        id: { type: GraphQLID },
-      },
-      async resolve(_, { id }, ctx) {
-        if (!id) return {};
-        const channel = await ChannelModel.findById(id);
-        if (!channel) throw new Error(`Channel#${id} does not exist`);
-        return channel;
-      },
-    },
-    message: {
-      type: MessageMutation,
-      args: {
-        id: { type: GraphQLID },
-      },
-      async resolve(_, { id }, ctx) {
-        if (!id) return {};
-        const message = await MessageModel.findById(id);
-        if (!message) throw new Error(`Message#${id} does not exist`);
-        return message;
       },
     },
   },

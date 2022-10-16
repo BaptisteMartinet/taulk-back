@@ -5,12 +5,12 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { IContext } from 'utils/context';
+import { IContextAuthenticated } from 'utils/context';
 import { ChannelModel, LobbyModel } from 'models';
 import { ChannelType } from 'schema/output-types';
 
 const ChannelMutation = new GraphQLObjectType({
-  name: 'ChannelMutation',
+  name: 'ChannelMutation_Authenticated',
   fields: {
     create: {
       type: ChannelType,
@@ -18,7 +18,7 @@ const ChannelMutation = new GraphQLObjectType({
         lobbyId: { type: new GraphQLNonNull(GraphQLID) },
         title: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(_, args, ctx: IContext) {
+      async resolve(_, args, ctx: IContextAuthenticated) {
         const { lobbyId, title } = args;
         const { currentUser } = ctx;
         if (!currentUser) {

@@ -1,33 +1,22 @@
-import { GraphQLList, GraphQLObjectType } from 'graphql';
-import type { IContext } from 'utils/context';
-import LobbyModel from 'models/Lobby.model';
-import { LobbyType, LobbyRestrictedType } from 'schema/output-types';
+import { GraphQLObjectType } from 'graphql';
+import { IContext } from 'utils/context';
+import PublicQuery from './public';
+import AuthenticatedQuery from './authenticated';
 
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
-    lobbies: {
-      type: new GraphQLList(LobbyRestrictedType),
-      async resolve() {
-        return LobbyModel.find();
-      },
+    public: {
+      type: PublicQuery,
+      resolve: () => ({}),
     },
-    myLobbies: {
-      type: new GraphQLList(LobbyType),
-      async resolve(_, args, ctx: IContext) {
-        const { currentUser } = ctx;
-        if (!currentUser) {
+    authenticated: {
+      type: AuthenticatedQuery,
+      resolve(_, args, ctx: IContext) {
+        if (!ctx.currentUser) {
           throw new Error('User must be authenticated');
         }
-        return LobbyModel.find({ users: currentUser.id }).populate([
-          'owner',
-          'users',
-          {
-            path: 'channels',
-            model: 'Channel',
-            populate: 'owner users messages',
-          },
-        ]);
+        return {};
       },
     },
   },

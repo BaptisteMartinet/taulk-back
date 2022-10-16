@@ -13,6 +13,10 @@ export interface IContext {
   currentUser?: HydratedDocument<IUser>;
 }
 
+export interface IContextAuthenticated extends Omit<IContext, 'currentUser'> {
+  currentUser: HydratedDocument<IUser>;
+}
+
 const context: ContextFunction<ExpressContext> = async ({ req, res }): Promise<IContext> => {
   const ctx: IContext = { req, res };
   const token = req.headers.authorization?.slice(7); // Slice out the 'Bearer ' part

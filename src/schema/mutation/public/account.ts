@@ -12,7 +12,7 @@ import { UserModel } from 'models';
 import { UserType } from 'schema/output-types';
 
 const AccountMutation = new GraphQLObjectType({
-  name: 'AccountMutation',
+  name: 'AccountMutation_Public',
   fields: {
     register: {
       type: GraphQLBoolean,
