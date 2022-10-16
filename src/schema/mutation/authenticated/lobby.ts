@@ -37,6 +37,15 @@ const LobbyMutation = new GraphQLObjectType({
         return true;
       },
     },
+
+    join: {
+      type: GraphQLBoolean,
+      async resolve(lobby, args, ctx: IContextAuthenticated) {
+        await LobbyModel.updateOne(lobby, { $push: { users: ctx.currentUser.id } });
+        return true;
+      },
+    },
+    // leave: {},
   },
 });
 
