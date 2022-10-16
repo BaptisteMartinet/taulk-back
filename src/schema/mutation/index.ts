@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { IContext, IContextAuthenticated } from 'utils/context';
+import { IContext } from 'utils/context';
 import PublicMutation from './public';
 import AuthenticatedMutation from './authenticated';
 
