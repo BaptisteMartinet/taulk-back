@@ -33,9 +33,9 @@ const MessageMutation = new GraphQLObjectType({
           owner: currentUser.id,
           text,
         });
-        channel.messages.push(message.id);
-        await channel.save();
+        await channel.updateOne({ $push: { messages: message.id } });
         const populatedMessage = await message.populate('owner');
+        populatedMessage.set('lobby', channel.lobby, { strict: false });
         pubsub.publish('NEW_MESSAGE', { newMessage: populatedMessage });
         return populatedMessage;
       },

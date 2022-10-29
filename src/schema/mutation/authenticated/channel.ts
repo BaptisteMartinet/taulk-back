@@ -37,8 +37,10 @@ const ChannelMutation = new GraphQLObjectType({
           owner: currentUser.id,
           users: [currentUser.id],
         });
-        lobby.channels.push(channel.id);
-        await lobby.save();
+        await Promise.all([
+          lobby.updateOne({ $push: { channels: channel.id } }),
+          currentUser.updateOne({ $push: { channels: channel.id } }),
+        ]);
         return channel.populate('owner users');
       },
     },
@@ -50,6 +52,19 @@ const ChannelMutation = new GraphQLObjectType({
         return true;
       },
     },
+
+    join: {
+      type: GraphQLBoolean,
+      async resolve(channel, args, ctx: IContextAuthenticated) {
+        const { currentUser } = ctx;
+        await Promise.all([
+          channel.updateOne({ $push: { users: currentUser.id } }),
+          currentUser.update({ $push: { channels: channel.id } }),
+        ]);
+        return true;
+      },
+    },
+    // leave: {},
   },
 });
 

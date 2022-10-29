@@ -16,6 +16,7 @@ import {
 } from 'utils/env';
 import context from 'utils/context';
 import schema from 'schema';
+import { context as wsContext } from 'schema/subscription';
 
 (async () => {
   if (!DATABASE_URL || !JWT_SECRET_KEY) {
@@ -30,7 +31,10 @@ import schema from 'schema';
     server: httpServer,
     path: '/graphql',
   });
-  const wsServerCleanup = useServer({ schema }, wsServer);
+  const wsServerCleanup = useServer({
+    schema,
+    context: wsContext,
+  }, wsServer);
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
