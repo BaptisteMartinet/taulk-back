@@ -14,7 +14,7 @@ export const UserRestrictedType = new GraphQLObjectType({
 });
 
 export const UserType = new GraphQLObjectType({
-  name: 'UserType',
+  name: 'User',
   fields: {
     id: { type: GraphQLID },
     username: { type: GraphQLString },
