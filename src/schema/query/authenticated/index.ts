@@ -22,7 +22,7 @@ const AuthenticatedQuery = new GraphQLObjectType({
           {
             path: 'channels',
             model: 'Channel',
-            populate: 'owner users messages',
+            populate: 'owner users lobby messages',
           },
         ]);
       },

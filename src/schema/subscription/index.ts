@@ -32,7 +32,7 @@ const SubscriptionType = new GraphQLObjectType({
         () => pubsub.asyncIterator('NEW_MESSAGE'),
         (payload, args, ctx: WSContext) => {
           const lobbyId = payload.newMessage.get('lobby');
-          const channelId = payload.newMessage.get('channel');
+          const channelId = payload.newMessage.get('channel').id; // unsure
           return ctx.currentUser.lobbies.includes(lobbyId)
             || ctx.currentUser.channels.includes(channelId);
         },

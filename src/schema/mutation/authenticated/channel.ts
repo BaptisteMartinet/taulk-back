@@ -32,7 +32,7 @@ const ChannelMutation = new GraphQLObjectType({
           throw new Error(`User#${currentUser.id} is not in Lobby#${lobbyId}`);
         }
         const channel = await ChannelModel.create({
-          lobby: lobbyId,
+          lobby: lobby.id,
           title,
           owner: currentUser.id,
           users: [currentUser.id],
@@ -41,7 +41,7 @@ const ChannelMutation = new GraphQLObjectType({
           lobby.updateOne({ $push: { channels: channel.id } }),
           currentUser.updateOne({ $push: { channels: channel.id } }),
         ]);
-        return channel.populate('owner users');
+        return channel.populate('owner lobby users');
       },
     },
     // update: {},

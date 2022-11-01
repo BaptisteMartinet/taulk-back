@@ -29,12 +29,12 @@ const MessageMutation = new GraphQLObjectType({
           throw new Error(`User#${currentUser.id} is not in Channel#${channelId}`);
         }
         const message = await MessageModel.create({
-          channel: channelId,
+          channel: channel.id,
           owner: currentUser.id,
           text,
         });
         await channel.updateOne({ $push: { messages: message.id } });
-        const populatedMessage = await message.populate('owner');
+        const populatedMessage = await message.populate('owner channel');
         populatedMessage.set('lobby', channel.lobby, { strict: false });
         pubsub.publish('NEW_MESSAGE', { newMessage: populatedMessage });
         return populatedMessage;
