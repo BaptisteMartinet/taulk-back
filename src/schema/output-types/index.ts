@@ -19,7 +19,6 @@ export const UserType = new GraphQLObjectType({
     id: { type: GraphQLID },
     username: { type: GraphQLString },
     email: { type: GraphQLString },
-    token: { type: GraphQLString },
     createdAt: { type: GraphQLDate },
     updatedAt: { type: GraphQLDate },
   },
