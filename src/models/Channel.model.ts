@@ -5,7 +5,7 @@ import type { IUser } from './User.model';
 
 export interface IChannel {
   lobby: ILobby;
-  title: String;
+  title: string;
   owner: IUser;
   users: Array<IUser>;
   messages: Array<IMessage>;

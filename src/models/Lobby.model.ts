@@ -3,8 +3,8 @@ import type { IUser } from './User.model';
 import type { IChannel } from './Channel.model';
 
 export interface ILobby {
-  title: String;
-  description: String;
+  title: string;
+  description: string;
   owner: IUser;
   users: Array<IUser>;
   channels: Array<IChannel>;
