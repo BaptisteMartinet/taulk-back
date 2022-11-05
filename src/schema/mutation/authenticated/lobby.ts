@@ -28,7 +28,6 @@ const LobbyMutation = new GraphQLObjectType({
           owner: currentUser.id,
           users: [currentUser.id],
         });
-        await currentUser.updateOne({ $push: { lobbies: lobby.id } });
         return lobby.populate('owner users');
       },
     },
@@ -45,10 +44,7 @@ const LobbyMutation = new GraphQLObjectType({
       type: GraphQLBoolean,
       async resolve(lobby, args, ctx: IContextAuthenticated) {
         const { currentUser } = ctx;
-        await Promise.all([
-          lobby.updateOne({ $push: { users: currentUser.id } }),
-          currentUser.updateOne({ $push: { lobbies: lobby.id } }),
-        ]);
+        await lobby.updateOne({ $push: { users: currentUser.id } });
         return true;
       },
     },

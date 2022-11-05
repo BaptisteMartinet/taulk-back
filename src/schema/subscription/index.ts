@@ -31,10 +31,11 @@ const SubscriptionType = new GraphQLObjectType({
       subscribe: withFilter(
         () => pubsub.asyncIterator('NEW_MESSAGE'),
         (payload, args, ctx: WSContext) => {
-          const lobbyId = payload.newMessage.get('lobby');
-          const channelId = payload.newMessage.get('channel').id; // unsure
-          return ctx.currentUser.lobbies.includes(lobbyId)
-            || ctx.currentUser.channels.includes(channelId);
+          const channel = payload.newMessage.get('channel');
+          if (channel.isPrivate) {
+            return channel.users.includes(ctx.currentUser.id);
+          }
+          return channel.lobby.users.includes(ctx.currentUser.id);
         },
       ),
     },
