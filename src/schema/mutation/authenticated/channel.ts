@@ -17,9 +17,10 @@ const ChannelMutation = new GraphQLObjectType({
       args: {
         lobbyId: { type: new GraphQLNonNull(GraphQLID) },
         title: { type: new GraphQLNonNull(GraphQLString) },
+        isPrivate: { type: new GraphQLNonNull(GraphQLBoolean) },
       },
       async resolve(_, args, ctx: IContextAuthenticated) {
-        const { lobbyId, title } = args;
+        const { lobbyId, title, isPrivate } = args;
         const { currentUser } = ctx;
         if (!currentUser) {
           throw new Error('User must be authenticated');
@@ -34,6 +35,7 @@ const ChannelMutation = new GraphQLObjectType({
         const channel = await ChannelModel.create({
           lobby: lobby.id,
           title,
+          isPrivate,
           owner: currentUser.id,
           users: [currentUser.id],
         });

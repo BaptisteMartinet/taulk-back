@@ -16,13 +16,15 @@ const LobbyMutation = new GraphQLObjectType({
       args: {
         title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: new GraphQLNonNull(GraphQLString) },
+        isPrivate: { type: new GraphQLNonNull(GraphQLBoolean) },
       },
       async resolve(_, args, ctx: IContextAuthenticated) {
-        const { title, description } = args;
+        const { title, description, isPrivate } = args;
         const { currentUser } = ctx;
         const lobby = await LobbyModel.create({
           title,
           description,
+          isPrivate,
           owner: currentUser.id,
           users: [currentUser.id],
         });

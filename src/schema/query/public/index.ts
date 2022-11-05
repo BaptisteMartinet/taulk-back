@@ -8,7 +8,7 @@ const PublicQuery = new GraphQLObjectType({
     lobbies: {
       type: new GraphQLList(LobbyRestrictedType),
       async resolve() {
-        return LobbyModel.find();
+        return LobbyModel.find({ isPrivate: false });
       },
     },
   },
