@@ -5,6 +5,7 @@ import type { IChannel } from './Channel.model';
 export interface ILobby {
   title: string;
   description: string;
+  isPrivate: boolean;
   owner: IUser;
   users: Array<IUser>;
   channels: Array<IChannel>;
@@ -13,6 +14,7 @@ export interface ILobby {
 const LobbySchema = new mongoose.Schema<ILobby>({
   title: { type: String, required: true },
   description: { type: String, required: true },
+  isPrivate: { type: Boolean, required: true },
   owner: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
   users: [{ type: mongoose.Types.ObjectId, ref: 'User', required: true }],
   channels: [{ type: mongoose.Types.ObjectId, ref: 'Channel', required: true }],
