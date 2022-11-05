@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import { IContext } from 'utils/context';
+import { MessageModel } from 'models';
 import {
   GraphQLID,
   GraphQLList,
@@ -45,7 +47,25 @@ export const ChannelType: GraphQLObjectType = new GraphQLObjectType({
     title: { type: GraphQLString },
     owner: { type: UserType },
     users: { type: new GraphQLList(UserRestrictedType) },
-    messages: { type: new GraphQLList(MessageType) },
+    messages: {
+      type: new GraphQLList(MessageType),
+      async resolve(channel, _, ctx: IContext) {
+        const { currentUser } = ctx;
+        if (currentUser == null) {
+          return [];
+        }
+        const channelUsersId = channel.users.map((u: any) => u.id);
+        if (channel.isPrivate && !channelUsersId.includes(currentUser.id)) {
+          return [];
+        }
+        const messages = MessageModel.find(
+          { channel: channel.id },
+          null,
+          { limit: 500, sort: { createdDate: 'descending' } },
+        ); // TODO pagination
+        return messages.populate('owner channel');
+      },
+    },
     createdAt: { type: GraphQLDate },
     updatedAt: { type: GraphQLDate },
   }),
