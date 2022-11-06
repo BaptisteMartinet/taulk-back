@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -47,8 +48,13 @@ const MessageMutation = new GraphQLObjectType({
         return populatedMessage;
       },
     },
-    // update: {},
-    // delete: {},
+    delete: {
+      type: GraphQLBoolean,
+      async resolve(parent) {
+        await MessageModel.findByIdAndDelete(parent.id);
+        return true;
+      },
+    },
   },
 });
 
