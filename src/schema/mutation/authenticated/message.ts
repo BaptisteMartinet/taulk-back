@@ -43,7 +43,6 @@ const MessageMutation = new GraphQLObjectType({
             populate: 'lobby',
           },
         ]);
-        // populatedMessage.set('lobby', channel.lobby, { strict: false });
         pubsub.publish('NEW_MESSAGE', { newMessage: populatedMessage });
         return populatedMessage;
       },
