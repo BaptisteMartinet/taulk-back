@@ -36,8 +36,12 @@ const LobbyMutation = new GraphQLObjectType({
     // update: {},
     delete: {
       type: GraphQLBoolean,
-      async resolve(parent) {
-        await LobbyModel.findByIdAndDelete(parent.id);
+      async resolve(lobby, args, ctx: IContextAuthenticated) {
+        const { currentUser } = ctx;
+        if (lobby.owner !== currentUser.id) {
+          throw new Error('Must be owner');
+        }
+        await LobbyModel.findByIdAndDelete(lobby.id);
         return true;
       },
     },

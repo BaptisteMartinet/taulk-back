@@ -46,8 +46,12 @@ const MessageMutation = new GraphQLObjectType({
     },
     delete: {
       type: GraphQLBoolean,
-      async resolve(parent) {
-        await MessageModel.findByIdAndDelete(parent.id);
+      async resolve(message, args, ctx: IContextAuthenticated) {
+        const { currentUser } = ctx;
+        if (message.owner !== currentUser.id) {
+          throw new Error('Must be owner');
+        }
+        await MessageModel.findByIdAndDelete(message.id);
         return true;
       },
     },

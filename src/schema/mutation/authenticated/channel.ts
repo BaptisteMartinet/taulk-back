@@ -46,8 +46,12 @@ const ChannelMutation = new GraphQLObjectType({
     // update: {},
     delete: {
       type: GraphQLBoolean,
-      async resolve(parent) {
-        await ChannelModel.findByIdAndDelete(parent.id);
+      async resolve(channel, args, ctx: IContextAuthenticated) {
+        const { currentUser } = ctx;
+        if (channel.owner !== currentUser.id) {
+          throw new Error('Must be owner');
+        }
+        await ChannelModel.findByIdAndDelete(channel.id);
         return true;
       },
     },
