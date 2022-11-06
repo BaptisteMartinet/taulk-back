@@ -4,6 +4,8 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET_KEY } from 'utils/env';
 import { IContextAuthenticated } from 'utils/context';
 import { LobbyType } from 'schema/output-types';
 import { LobbyModel } from 'models';
@@ -40,15 +42,40 @@ const LobbyMutation = new GraphQLObjectType({
       },
     },
 
+    generateInvitationToken: {
+      type: GraphQLString,
+      resolve(lobby, args, ctx: IContextAuthenticated) {
+        const { currentUser } = ctx;
+        if (lobby == null) {
+          return null;
+        }
+        if (lobby.isPrivate && !lobby.users.includes(currentUser.id)) {
+          return null;
+        }
+        return jwt.sign({ lobbyId: lobby.id }, JWT_SECRET_KEY!, { expiresIn: '24h' });
+      },
+    },
     join: {
       type: GraphQLBoolean,
+      args: {
+        token: { type: GraphQLString },
+      },
       async resolve(lobby, args, ctx: IContextAuthenticated) {
         const { currentUser } = ctx;
-        await lobby.updateOne({ $push: { users: currentUser.id } });
+        const { token } = args;
+        if (lobby != null && lobby.isPrivate === false) {
+          if (lobby.users.includes(currentUser.id)) {
+            throw new Error('Lobby already joined');
+          }
+          await lobby.updateOne({ $push: { users: currentUser.id } });
+          return true;
+        }
+        if (token == null) return false;
+        const payload: any = jwt.verify(token, JWT_SECRET_KEY!) as string;
+        await LobbyModel.updateOne({ id: payload.lobbyId }, { $push: { users: currentUser.id } });
         return true;
       },
     },
-    // leave: {},
   },
 });
 
