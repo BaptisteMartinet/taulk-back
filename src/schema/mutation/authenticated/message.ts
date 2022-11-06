@@ -26,9 +26,6 @@ const MessageMutation = new GraphQLObjectType({
         if (!channel) {
           throw new Error(`Channel#${channelId} does not exist`);
         }
-        if (!channel.users.includes(currentUser.id)) {
-          throw new Error(`User#${currentUser.id} is not in Channel#${channelId}`);
-        }
         const message = await MessageModel.create({
           channel: channel.id,
           owner: currentUser.id,
