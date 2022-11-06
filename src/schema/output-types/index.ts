@@ -12,6 +12,7 @@ import GraphQLDate from 'schema/scalars/date';
 export const UserRestrictedType = new GraphQLObjectType({
   name: 'UserRestricted',
   fields: () => ({
+    id: { type: GraphQLID },
     username: { type: GraphQLString },
   }),
 });
